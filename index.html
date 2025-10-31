@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kana Audio Quiz</title>
+  <style>
+    body {
+      font-family: "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    color: #333;
+    text-align: center;
+    background: transparent;
+
+    }
+
+    h1 {
+      color: #b23b3b;
+    font-size: 2em;
+    margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    /* Play sound button — white with pink border */
+    #playSound {
+      background-color: white;
+      color: #b23b3b;
+      border: 3px solid #b23b3b;
+    }
+
+    #playSound:hover {
+      background-color: #ffe6f2;
+    }
+
+    /* Answer buttons — pink with white text */
+    .choice {
+      background-color: #b23b3b;
+      color: white;
+      border: 2px solid #b23b3b;
+    }
+
+    .choice:hover {
+      background-color: #ff4da6;
+    }
+
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎧 Kana Listening Quiz</h1>
+  <button id="playSound">▶️ Play Sound</button>
+  <div id="choices"></div>
+  <div id="result"></div>
+
+  <!-- Audio files -->
+  <audio id="pa" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/pa.mp3"></audio>
+  <audio id="pi" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/pi.mp3"></audio>
+  <audio id="pu" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/pu.mp3"></audio>
+  <audio id="pe" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/pe.mp3"></audio>
+  <audio id="po" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/po.mp3"></audio>
+
+  <audio id="ba" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/ba.mp3"></audio>
+  <audio id="bi" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/bi.mp3"></audio>
+  <audio id="bu" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/bu.mp3"></audio>
+  <audio id="be" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/be.mp3"></audio>
+  <audio id="bo" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/bo.mp3"></audio>
+
+  <audio id="da" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/da.mp3"></audio>
+  <audio id="ji" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/ji.mp3"></audio>
+  <audio id="zu" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/zu.mp3"></audio>
+  <audio id="de" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/de.mp3"></audio>
+  <audio id="do" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/do.mp3"></audio>
+
+  <audio id="ga" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/ga.mp3"></audio>
+  <audio id="gi" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/gi.mp3"></audio>
+  <audio id="gu" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/gu.mp3"></audio>
+  <audio id="ge" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/ge.mp3"></audio>
+  <audio id="go" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/go.mp3"></audio>
+
+  <audio id="za" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/za.mp3"></audio>
+  <audio id="ze" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/ze.mp3"></audio>
+  <audio id="zo" src="https://raw.githubusercontent.com/Kuuuube/kana-quiz-sounds/master/audio/0/zo.mp3"></audio>
+
+  <script>
+    const sounds = [
+      "pa","pi","pu","pe","po",
+      "ba","bi","bu","be","bo",
+      "da","ji","zu","de","do",
+      "ga","gi","gu","ge","go",
+      "za","ze","zo"
+    ];
+
+    let currentSound = "";
+
+    function newQuestion() {
+      const randomIndex = Math.floor(Math.random() * sounds.length);
+      currentSound = sounds[randomIndex];
+      const choicesDiv = document.getElementById("choices");
+      choicesDiv.innerHTML = "";
+      const shuffled = [...sounds].sort(() => 0.5 - Math.random()).slice(0, 4);
+      if (!shuffled.includes(currentSound)) shuffled[Math.floor(Math.random() * 4)] = currentSound;
+      shuffled.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.textContent = choice;
+        btn.onclick = () => checkAnswer(choice);
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    function playCurrentSound() {
+      document.getElementById(currentSound).play();
+    }
+
+    function checkAnswer(choice) {
+      const result = document.getElementById("result");
+      if (choice === currentSound) {
+        result.textContent = "✅ Correct!";
+        result.style.color = "#28a745";
+      } else {
+        result.textContent = `❌ Wrong! It was "${currentSound}"`;
+        result.style.color = "#d63384";
+      }
+      setTimeout(newQuestion, 1500);
+    }
+
+    document.getElementById("playSound").addEventListener("click", playCurrentSound);
+    newQuestion();
+  </script>
+</body>
+</html>
